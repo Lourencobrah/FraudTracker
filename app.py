@@ -8,6 +8,8 @@ app = Flask(__name__)
 def init_db():
     conn = sqlite3.connect("fraud_tracker.db")
     cursor = conn.cursor()
+
+    # Criar a tabela logs, caso ela não exista
     cursor.execute('''CREATE TABLE IF NOT EXISTS logs (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         ip TEXT,
@@ -18,9 +20,22 @@ def init_db():
                         nome TEXT,
                         email TEXT,
                         telefone TEXT)''')
+
+    # Colunas esperadas
+    required_columns = ['id', 'ip', 'latitude', 'longitude', 'user_agent', 'timestamp', 'nome', 'email', 'telefone']
+
+    # Verificar as colunas da tabela logs
+    cursor.execute("PRAGMA table_info(logs);")
+    columns = [column[1] for column in cursor.fetchall()]
+
+    # Verificar se todas as colunas necessárias estão presentes
+    for column in required_columns:
+        if column not in columns:
+            print(f"A coluna '{column}' não foi encontrada. Adicionando...")
+            cursor.execute(f"ALTER TABLE logs ADD COLUMN {column} TEXT")
+
     conn.commit()
     conn.close()
-
 
 @app.route('/')
 def index():
