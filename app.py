@@ -59,6 +59,16 @@ def view_logs():
 
     return render_template('logs.html', logs=logs)
 
+@app.route('/clear_logs', methods=['POST'])
+def clear_logs():
+    conn = sqlite3.connect("fraud_tracker.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM logs")
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "sucesso", "message": "Logs apagados"})
+
+
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 10000)) 

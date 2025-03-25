@@ -38,18 +38,19 @@
 
     <script>
         function clearLogs() {
-            document.getElementById("logTable").innerHTML = `
-                <tr>
-                    <th>ID</th>
-                    <th>IP</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                    <th>User Agent</th>
-                    <th>Dados Adicionais</th>
-                    <th>Timestamp</th>
-                </tr>
-            `;
+            fetch('/clear_logs', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload(); 
+                })
+                .catch(error => console.error('Erro ao limpar logs:', error));
         }
+    
+        setInterval(() => {
+            location.reload();
+        }, 5000);
     </script>
+    
 </body>
 </html>
