@@ -4,68 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logs de Acesso</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e1e;
-            color: white;
-            text-align: center;
-            margin: 20px;
-        }
-
-        h1 {
-            color: #00c8ff;
-        }
-
-        .log-container {
-            max-width: 90%;
-            margin: auto;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #2d2d2d;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #444;
-            text-align: left;
-        }
-
-        th {
-            background: #007acc;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background: #3a3a3a;
-        }
-
-        tr:hover {
-            background: #444;
-        }
-
-        .timestamp {
-            font-weight: bold;
-            color: #ff9800;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Lista de Logs</h1>
+    
+    <button class="clear-button" onclick="clearLogs()">Limpar Logs</button>
+    
     <div class="log-container">
-        <table>
+        <table id="logTable">
             <tr>
                 <th>ID</th>
                 <th>IP</th>
                 <th>Latitude</th>
                 <th>Longitude</th>
                 <th>User Agent</th>
+                <th>Dados Adicionais</th>
                 <th>Timestamp</th>
             </tr>
             {% for log in logs %}
@@ -75,10 +29,27 @@
                 <td>{{ log[2] }}</td>
                 <td>{{ log[3] }}</td>
                 <td>{{ log[4] }}</td>
+                <td>{{ log[6] if log[6] else 'N/A' }}</td>
                 <td class="timestamp">{{ log[5] }}</td>
             </tr>
             {% endfor %}
         </table>
     </div>
+
+    <script>
+        function clearLogs() {
+            document.getElementById("logTable").innerHTML = `
+                <tr>
+                    <th>ID</th>
+                    <th>IP</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>User Agent</th>
+                    <th>Dados Adicionais</th>
+                    <th>Timestamp</th>
+                </tr>
+            `;
+        }
+    </script>
 </body>
 </html>

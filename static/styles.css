@@ -71,3 +71,62 @@ input {
     margin-top: 15px;
     font-weight: bold;
 }
+
+/* Estilos específicos para logs */
+.log-container {
+    max-width: 90%;
+    margin: auto;
+    overflow-x: auto;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #2d2d2d;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #444;
+    text-align: left;
+}
+
+th {
+    background: #007acc;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #3a3a3a;
+}
+
+tr:hover {
+    background: #444;
+}
+
+.timestamp {
+    font-weight: bold;
+    color: #ff9800;
+}
+
+.clear-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 20px 0;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.clear-button:hover {
+    background-color: #d43f3f;
+}
