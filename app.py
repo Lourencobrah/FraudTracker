@@ -14,9 +14,13 @@ def init_db():
                         latitude TEXT,
                         longitude TEXT,
                         user_agent TEXT,
-                        timestamp TEXT)''')
+                        timestamp TEXT,
+                        nome TEXT,
+                        email TEXT
+                        telefone TEXT)''')
     conn.commit()
     conn.close()
+
 
 @app.route('/')
 def index():
@@ -31,18 +35,21 @@ def track():
     response.headers['Expires'] = '0'
 
     data = request.json
-    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    ip = request.remote_addr
     latitude = data.get('latitude', 'Desconhecido')
     longitude = data.get('longitude', 'Desconhecido')
     user_agent = data.get('userAgent', 'Desconhecido')
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nome = data.get('nome', 'Desconhecido')
+    email = data.get('email', 'Desconhecido')
+    telefone = data.get('telefone', 'Desconhecido')
 
-    print(f"Dados recebidos: IP={ip}, Latitude={latitude}, Longitude={longitude}, User Agent={user_agent}, Timestamp={timestamp}")
+    print(f"Dados recebidos: IP={ip}, Latitude={latitude}, Longitude={longitude}, User Agent={user_agent}, Timestamp={timestamp}, Nome={nome}, Email={email}, Telefone={telefone}")
 
     conn = sqlite3.connect("fraud_tracker.db")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp) VALUES (?, ?, ?, ?, ?)",
-                   (ip, latitude, longitude, user_agent, timestamp))
+    cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone) VALUES (?, ?, ?, ?, ?)",
+                   (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone))
     conn.commit()
     conn.close()
 
