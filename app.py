@@ -49,7 +49,7 @@ def track():
         latitude = data.get('latitude', 'Desconhecido')
         longitude = data.get('longitude', 'Desconhecido')
         user_agent = data.get('user_agent', 'Desconhecido')
-        timestamp = datetime.timezone.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         nome = data.get('nome', 'N/A')
         email = data.get('email', 'N/A')
         telefone = data.get('telefone', 'N/A')
