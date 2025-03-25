@@ -19,9 +19,10 @@
                 <th>Latitude</th>
                 <th>Longitude</th>
                 <th>User Agent</th>
-                <th>Dados Adicionais</th>
-                <th>Informações Adicionais</th>
                 <th>Timestamp</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
             </tr>
             {% for log in logs %}
             <tr>
@@ -30,10 +31,10 @@
                 <td>{{ log[2] }}</td>
                 <td>{{ log[3] }}</td>
                 <td>{{ log[4] }}</td>
+                <td class="timestamp">{{ log[5] }}</td>
                 <td>{{ log[6] if log[6] else 'N/A' }}</td>
                 <td>{{ log[7] if log[7] else 'N/A' }}</td>
                 <td>{{ log[8] if log[8] else 'N/A' }}</td>
-                <td class="timestamp">{{ log[5] }}</td>
             </tr>
             {% endfor %}
         </table>
