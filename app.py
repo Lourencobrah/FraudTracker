@@ -38,7 +38,7 @@ def track():
     ip = request.remote_addr
     latitude = data.get('latitude', 'Desconhecido')
     longitude = data.get('longitude', 'Desconhecido')
-    user_agent = data.get('userAgent', 'Desconhecido')
+    user_agent = data.get('user_agent', 'Desconhecido')
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     nome = data.get('nome', 'N/A')
     email = data.get('email', 'N/A')
@@ -48,8 +48,9 @@ def track():
 
     conn = sqlite3.connect("fraud_tracker.db")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone) VALUES (?, ?, ?, ?, ?)",
-                   (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone))
+    cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+               (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone))
+
     conn.commit()
     conn.close()
 
