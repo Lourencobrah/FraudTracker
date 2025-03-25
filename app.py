@@ -40,9 +40,9 @@ def track():
     longitude = data.get('longitude', 'Desconhecido')
     user_agent = data.get('userAgent', 'Desconhecido')
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    nome = data.get('nome', 'Desconhecido')
-    email = data.get('email', 'Desconhecido')
-    telefone = data.get('telefone', 'Desconhecido')
+    nome = data.get('nome', 'N/A')
+    email = data.get('email', 'N/A')
+    telefone = data.get('telefone', 'N/A')
 
     print(f"Dados recebidos: IP={ip}, Latitude={latitude}, Longitude={longitude}, User Agent={user_agent}, Timestamp={timestamp}, Nome={nome}, Email={email}, Telefone={telefone}")
 
