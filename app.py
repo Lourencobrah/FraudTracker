@@ -26,35 +26,33 @@ def init_db():
 def index():
     return render_template('index.html')
 
-
 @app.route('/track', methods=['POST'])
 def track():
-    response = make_response(jsonify({"status": "sucesso", "message": "Dados registrados"}), 200)
-    response.headers['Cache-Control'] = 'no-store'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    try:
+        data = request.json
+        ip = request.remote_addr
+        latitude = data.get('latitude', 'Desconhecido')
+        longitude = data.get('longitude', 'Desconhecido')
+        user_agent = data.get('user_agent', 'Desconhecido')
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        nome = data.get('nome', 'N/A')
+        email = data.get('email', 'N/A')
+        telefone = data.get('telefone', 'N/A')
 
-    data = request.json
-    ip = request.remote_addr
-    latitude = data.get('latitude', 'Desconhecido')
-    longitude = data.get('longitude', 'Desconhecido')
-    user_agent = data.get('user_agent', 'Desconhecido')  # Corrigido de 'userAgent' para 'user_agent'
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    nome = data.get('nome', 'N/A')
-    email = data.get('email', 'N/A')
-    telefone = data.get('telefone', 'N/A')
+        print(f"Dados recebidos: IP={ip}, Latitude={latitude}, Longitude={longitude}, User Agent={user_agent}, Timestamp={timestamp}, Nome={nome}, Email={email}, Telefone={telefone}")
 
-    print(f"Dados recebidos: IP={ip}, Latitude={latitude}, Longitude={longitude}, User Agent={user_agent}, Timestamp={timestamp}, Nome={nome}, Email={email}, Telefone={telefone}")
+        # Inserir no banco de dados
+        conn = sqlite3.connect("fraud_tracker.db")
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                       (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone))
+        conn.commit()
+        conn.close()
 
-    conn = sqlite3.connect("fraud_tracker.db")
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                   (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone))
-    conn.commit()
-    conn.close()
-
-    return response
-
+        return jsonify({"status": "sucesso", "message": "Dados registrados"}), 200
+    except Exception as e:
+        print(f"Erro ao processar os dados: {str(e)}")
+        return jsonify({"status": "erro", "message": f"Erro ao processar os dados: {str(e)}"}), 500
 
 @app.route('/logs')
 def view_logs():
