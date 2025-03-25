@@ -16,46 +16,47 @@ def init_db():
                         user_agent TEXT,
                         timestamp TEXT,
                         nome TEXT,
-                        email TEXT
-                        telefone TEXT)''')
+                        email TEXT,
+                        telefone TEXT)''')  # Corrigido aqui, com a coluna telefone
     conn.commit()
     conn.close()
-
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/track', methods=['POST'])
+@app.route('/track', methods=['POST'])
 def track():
+    try:
+        data = request.json
+        print(f"Dados recebidos: {data}")  # Imprime todos os dados para ver o que está sendo enviado
 
-    response = make_response(jsonify({"status": "sucesso", "message": "Dados registrados"}), 200)
-    response.headers['Cache-Control'] = 'no-store'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+        ip = request.remote_addr
+        latitude = data.get('latitude', 'Desconhecido')
+        longitude = data.get('longitude', 'Desconhecido')
+        user_agent = data.get('user_agent', 'Desconhecido')
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        nome = data.get('nome', 'N/A')
+        email = data.get('email', 'N/A')
+        telefone = data.get('telefone', 'N/A')
 
-    data = request.json
-    ip = request.remote_addr
-    latitude = data.get('latitude', 'Desconhecido')
-    longitude = data.get('longitude', 'Desconhecido')
-    user_agent = data.get('user_agent', 'Desconhecido')
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    nome = data.get('nome', 'N/A')
-    email = data.get('email', 'N/A')
-    telefone = data.get('telefone', 'N/A')
+        # Verifica se todos os dados estão sendo recebidos corretamente
+        print(f"IP: {ip}, Latitude: {latitude}, Longitude: {longitude}, User Agent: {user_agent}, Nome: {nome}, Email: {email}, Telefone: {telefone}")
 
-    print(f"Dados recebidos: IP={ip}, Latitude={latitude}, Longitude={longitude}, User Agent={user_agent}, Timestamp={timestamp}, Nome={nome}, Email={email}, Telefone={telefone}")
+        # Conexão com o banco de dados e inserção de dados
+        conn = sqlite3.connect("fraud_tracker.db")
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                       (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone))
+        conn.commit()
+        conn.close()
 
-    conn = sqlite3.connect("fraud_tracker.db")
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO logs (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-               (ip, latitude, longitude, user_agent, timestamp, nome, email, telefone))
+        return make_response(jsonify({"status": "sucesso", "message": "Dados registrados"}), 200)
 
-    conn.commit()
-    conn.close()
-
-    return response
-
+    except Exception as e:
+        print(f"Erro ao registrar dados: {e}")  # Imprime o erro se acontecer
+        return make_response(jsonify({"status": "erro", "message": f"Erro ao registrar dados: {str(e)}"}), 500)
 
 @app.route('/logs')
 def view_logs():
